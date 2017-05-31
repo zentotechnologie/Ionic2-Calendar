@@ -169,6 +169,7 @@ export enum Step {
                 [monthviewEventDetailTemplate]="monthviewEventDetailTemplate||monthviewDefaultEventDetailTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [dir]="dir"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -187,6 +188,9 @@ export enum Step {
                 [weekviewNormalEventTemplate]="weekviewNormalEventTemplate||defaultNormalEventTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [dir]="dir"
+                [scrollToHour]="scrollToHour"
+                [preserveScrollPosition]="preserveScrollPosition"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -203,6 +207,9 @@ export enum Step {
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [dir]="dir"
+                [scrollToHour]="scrollToHour"
+                [preserveScrollPosition]="preserveScrollPosition"
                 (onRangeChanged)="rangeChanged($event)"
                 (onEventSelected)="eventSelected($event)"
                 (onTimeSelected)="timeSelected($event)"
@@ -294,6 +301,9 @@ export class CalendarComponent implements OnInit {
     @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
     @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
     @Input() dateFormatter:IDateFormatter;
+    @Input() dir:string = "";
+    @Input() scrollToHour:number = 0;
+    @Input() preserveScrollPosition:boolean = false;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
