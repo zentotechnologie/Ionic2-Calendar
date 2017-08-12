@@ -477,6 +477,8 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
+    @Input() lockSwipeToPrev:boolean;
+    @Input() lockSwipes:boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -492,6 +494,7 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
     private inited = false;
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
+    private eventSourceChangedSubscription:Subscription;
     private hourColumnLabels:string[];
     private initScrollPosition:number;
     private formatDayHeader:(date:Date) => string;
@@ -529,12 +532,24 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
             };
         }
 
+        if (this.lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(true);
+        }
+
+        if (this.lockSwipes) {
+            this.slider.lockSwipes(true);
+        }
+
         this.refreshView();
         this.hourColumnLabels = this.getHourColumnLabels();
         this.inited = true;
 
         this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
             this.refreshView();
+        });
+
+        this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
+            this.onDataLoaded();
         });
     }
 
@@ -558,12 +573,27 @@ export class WeekViewComponent implements ICalendarComponent, OnInit, OnChanges 
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
+
+        let lockSwipeToPrev = changes['lockSwipeToPrev'];
+        if (lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
+        }
+
+        let lockSwipes = changes['lockSwipesv'];
+        if (lockSwipes) {
+            this.slider.lockSwipes(lockSwipes.currentValue);
+        }
     }
 
     ngOnDestroy() {
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
+        }
+
+        if (this.eventSourceChangedSubscription) {
+            this.eventSourceChangedSubscription.unsubscribe();
+            this.eventSourceChangedSubscription = null;
         }
     }
 
