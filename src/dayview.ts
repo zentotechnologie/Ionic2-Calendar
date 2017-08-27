@@ -391,6 +391,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     @Input() dir:string = "";
     @Input() scrollToHour:number = 0;
     @Input() preserveScrollPosition:boolean;
+    @Input() lockSwipeToPrev:boolean;
+    @Input() lockSwipes:boolean;
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
@@ -410,6 +412,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
     private inited = false;
     private callbackOnInit = true;
     private currentDateChangedFromParentSubscription:Subscription;
+    private eventSourceChangedSubscription:Subscription;
     private hourColumnLabels:string[];
     private initScrollPosition:number;
     private formatTitle:(date:Date) => string;
@@ -437,6 +440,14 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             };
         }
 
+        if (this.lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(true);
+        }
+
+        if (this.lockSwipes) {
+            this.slider.lockSwipes(true);
+        }
+
         this.refreshView();
         this.hourColumnLabels = this.getHourColumnLabels();
 
@@ -444,6 +455,10 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
 
         this.currentDateChangedFromParentSubscription = this.calendarService.currentDateChangedFromParent$.subscribe(currentDate => {
             this.refreshView();
+        });
+
+        this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
+            this.onDataLoaded();
         });
     }
 
@@ -467,12 +482,27 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         if (eventSourceChange && eventSourceChange.currentValue) {
             this.onDataLoaded();
         }
+
+        let lockSwipeToPrev = changes['lockSwipeToPrev'];
+        if (lockSwipeToPrev) {
+            this.slider.lockSwipeToPrev(lockSwipeToPrev.currentValue);
+        }
+
+        let lockSwipes = changes['lockSwipes'];
+        if (lockSwipes) {
+            this.slider.lockSwipes(lockSwipes.currentValue);
+        }
     }
 
     ngOnDestroy() {
         if (this.currentDateChangedFromParentSubscription) {
             this.currentDateChangedFromParentSubscription.unsubscribe();
             this.currentDateChangedFromParentSubscription = null;
+        }
+
+        if (this.eventSourceChangedSubscription) {
+            this.eventSourceChangedSubscription.unsubscribe();
+            this.eventSourceChangedSubscription = null;
         }
     }
 
@@ -567,7 +597,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             utcEndTime = new Date(Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate())),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents = this.views[currentViewIndex].allDayEvents,
+            allDayEvents:IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
             oneHour = 3600000,
             eps = 0.016,
             normalEventInRange = false;
