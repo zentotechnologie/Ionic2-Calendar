@@ -1,6 +1,6 @@
 {
   "name": "@zentotech/ionic2-calendar",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "Ionic2 calendar component",
   "keywords": [
     "Ionic2",
@@ -19,7 +19,7 @@
     "copy_static_files_prod": "cp -r package.json README.md LICENSE tsconfig.json typings.json typings aot/",
     "dev": "tsc --watch",
     "postinstall": "typings install",
-      "prepublish":"npm run build-prod"
+    "prepublish": "npm run build-prod"
   },
   "main": "./index.js",
   "dependencies": {},
