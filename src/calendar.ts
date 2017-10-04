@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, Inject, LOCALE_ID } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef, Inject, LOCALE_ID} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
 
-import { CalendarService } from './calendar.service';
+import {CalendarService} from './calendar.service';
 
 export interface IEvent {
     allDay: boolean;
@@ -78,12 +78,12 @@ export interface ICalendarComponent {
     currentViewIndex: number;
     direction: number;
     eventSource: IEvent[];
-    getRange: { (date:Date): IRange; };
-    getViewData: { (date:Date): IView };
+    getRange: {(date: Date): IRange;};
+    getViewData: {(date: Date): IView};
     mode: CalendarMode;
     range: IRange;
     views: IView[];
-    onDataLoaded: { (): void };
+    onDataLoaded: {(): void};
     onRangeChanged: EventEmitter<IRange>;
 }
 
@@ -105,17 +105,17 @@ export interface IMonthViewEventDetailTemplateContext {
 }
 
 export interface IDateFormatter {
-    formatMonthViewDay?: { (date:Date): string; };
-    formatMonthViewDayHeader?: { (date:Date): string; };
-    formatMonthViewTitle?: { (date:Date): string; };
-    formatWeekViewDayHeader?: { (date:Date): string; };
-    formatWeekViewTitle?: { (date:Date): string; };
-    formatWeekViewHourColumn?: { (date:Date): string; };
-    formatDayViewTitle?: { (date:Date): string; };
-    formatDayViewHourColumn?: { (date:Date): string; };
+    formatMonthViewDay?: {(date: Date): string;};
+    formatMonthViewDayHeader?: {(date: Date): string;};
+    formatMonthViewTitle?: {(date: Date): string;};
+    formatWeekViewDayHeader?: {(date: Date): string;};
+    formatWeekViewTitle?: {(date: Date): string;};
+    formatWeekViewHourColumn?: {(date: Date): string;};
+    formatDayViewTitle?: {(date: Date): string;};
+    formatDayViewHourColumn?: {(date: Date): string;};
 }
 
-export type CalendarMode = 'day' | 'month' | 'week';
+export type CalendarMode = 'day' | 'month' | 'week | ztoday';
 
 export type QueryMode = 'local' | 'remote';
 
@@ -221,6 +221,27 @@ export enum Step {
                 (onTimeSelected)="timeSelected($event)"
                 (onTitleChanged)="titleChanged($event)">
             </dayview>
+                        <ztodayview *ngSwitchCase="'ztoday'"
+                [formatDayTitle]="formatDayTitle"
+                [formatHourColumn]="formatHourColumn"
+                [allDayLabel]="allDayLabel"
+                [hourParts]="hourParts"
+                [eventSource]="eventSource"
+                [markDisabled]="markDisabled"
+                [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
+                [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
+                [locale]="locale"
+                [dateFormatter]="dateFormatter"
+                [dir]="dir"
+                [scrollToHour]="scrollToHour"
+                [preserveScrollPosition]="preserveScrollPosition"
+                [lockSwipeToPrev]="lockSwipeToPrev"
+                [lockSwipes]="lockSwipes"
+                (onRangeChanged)="rangeChanged($event)"
+                (onEventSelected)="eventSelected($event)"
+                (onTimeSelected)="timeSelected($event)"
+                (onTitleChanged)="titleChanged($event)">
+            </ztodayview>
         </div>
     `,
     styles: [`
@@ -267,11 +288,11 @@ export enum Step {
 })
 export class CalendarComponent implements OnInit {
     @Input()
-    get currentDate():Date {
+    get currentDate(): Date {
         return this._currentDate;
     }
 
-    set currentDate(val:Date) {
+    set currentDate(val: Date) {
         if (!val) {
             val = new Date();
         }
@@ -281,38 +302,38 @@ export class CalendarComponent implements OnInit {
         this.onCurrentDateChanged.emit(this._currentDate);
     }
 
-    @Input() eventSource:IEvent[] = [];
-    @Input() calendarMode:CalendarMode = 'month';
-    @Input() formatDay:string = 'd';
-    @Input() formatDayHeader:string = 'EEE';
-    @Input() formatDayTitle:string = 'MMMM dd, yyyy';
-    @Input() formatWeekTitle:string = 'MMMM yyyy, Week $n';
-    @Input() formatMonthTitle:string = 'MMMM yyyy';
-    @Input() formatWeekViewDayHeader:string = 'EEE d';
-    @Input() formatHourColumn:string = 'j';
-    @Input() showEventDetail:boolean = true;
-    @Input() startingDayMonth:number = 0;
-    @Input() startingDayWeek:number = 0;
-    @Input() allDayLabel:string = 'all day';
-    @Input() noEventsLabel:string = 'No Events';
-    @Input() queryMode:QueryMode = 'local';
-    @Input() step:Step = Step.Hour;
-    @Input() autoSelect:boolean = true;
-    @Input() markDisabled:(date:Date) => boolean;
-    @Input() monthviewDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewInactiveDisplayEventTemplate:TemplateRef<IMonthViewDisplayEventTemplateContext>;
-    @Input() monthviewEventDetailTemplate:TemplateRef<IMonthViewEventDetailTemplateContext>;
-    @Input() weekviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
-    @Input() weekviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
-    @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
-    @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
-    @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
-    @Input() scrollToHour:number = 0;
-    @Input() preserveScrollPosition:boolean = false;
-    @Input() lockSwipeToPrev:boolean = false;
-    @Input() lockSwipes:boolean = false;
-    @Input() locale:string = "";
+    @Input() eventSource: IEvent[] = [];
+    @Input() calendarMode: CalendarMode = 'month';
+    @Input() formatDay: string = 'd';
+    @Input() formatDayHeader: string = 'EEE';
+    @Input() formatDayTitle: string = 'MMMM dd, yyyy';
+    @Input() formatWeekTitle: string = 'MMMM yyyy, Week $n';
+    @Input() formatMonthTitle: string = 'MMMM yyyy';
+    @Input() formatWeekViewDayHeader: string = 'EEE d';
+    @Input() formatHourColumn: string = 'j';
+    @Input() showEventDetail: boolean = true;
+    @Input() startingDayMonth: number = 0;
+    @Input() startingDayWeek: number = 0;
+    @Input() allDayLabel: string = 'all day';
+    @Input() noEventsLabel: string = 'No Events';
+    @Input() queryMode: QueryMode = 'local';
+    @Input() step: Step = Step.Hour;
+    @Input() autoSelect: boolean = true;
+    @Input() markDisabled: (date: Date) => boolean;
+    @Input() monthviewDisplayEventTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewInactiveDisplayEventTemplate: TemplateRef<IMonthViewDisplayEventTemplateContext>;
+    @Input() monthviewEventDetailTemplate: TemplateRef<IMonthViewEventDetailTemplateContext>;
+    @Input() weekviewAllDayEventTemplate: TemplateRef<IDisplayAllDayEvent>;
+    @Input() weekviewNormalEventTemplate: TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventTemplate: TemplateRef<IDisplayAllDayEvent>;
+    @Input() dayviewNormalEventTemplate: TemplateRef<IDisplayEvent>;
+    @Input() dateFormatter: IDateFormatter;
+    @Input() dir: string = "";
+    @Input() scrollToHour: number = 0;
+    @Input() preserveScrollPosition: boolean = false;
+    @Input() lockSwipeToPrev: boolean = false;
+    @Input() lockSwipes: boolean = false;
+    @Input() locale: string = "";
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();
@@ -320,11 +341,11 @@ export class CalendarComponent implements OnInit {
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
     @Output() onTitleChanged = new EventEmitter<string>();
 
-    private _currentDate:Date;
+    private _currentDate: Date;
     private hourParts = 1;
-    private currentDateChangedFromChildrenSubscription:Subscription;
+    private currentDateChangedFromChildrenSubscription: Subscription;
 
-    constructor(private calendarService:CalendarService, @Inject(LOCALE_ID) private appLocale:string) {
+    constructor(private calendarService: CalendarService, @Inject(LOCALE_ID) private appLocale: string) {
         this.locale = appLocale;
     }
 
@@ -352,19 +373,19 @@ export class CalendarComponent implements OnInit {
         }
     }
 
-    rangeChanged(range:IRange) {
+    rangeChanged(range: IRange) {
         this.onRangeChanged.emit(range);
     }
 
-    eventSelected(event:IEvent) {
+    eventSelected(event: IEvent) {
         this.onEventSelected.emit(event);
     }
 
-    timeSelected(timeSelected:ITimeSelected) {
+    timeSelected(timeSelected: ITimeSelected) {
         this.onTimeSelected.emit(timeSelected);
     }
 
-    titleChanged(title:string) {
+    titleChanged(title: string) {
         this.onTitleChanged.emit(title);
     }
 

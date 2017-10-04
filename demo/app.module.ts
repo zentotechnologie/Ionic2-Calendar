@@ -4,7 +4,7 @@ import { MyApp } from './app/app.component';
 import { AboutPage } from './pages/about';
 import { HomePage } from './pages/home';
 import { TabsPage } from './pages/tabs';
-import { NgCalendarModule  } from 'ionic2-calendar';
+import { NgCalendarModule  } from '../dist/index.js';
 
 @NgModule({
     declarations: [
