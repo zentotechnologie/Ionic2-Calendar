@@ -115,7 +115,7 @@ export interface IDateFormatter {
     formatDayViewHourColumn?: {(date: Date): string;};
 }
 
-export type CalendarMode = 'day' | 'month' | 'week' | 'ztoday';
+export type CalendarMode = 'day' | 'month' | 'week' ;
 
 export type QueryMode = 'local' | 'remote';
 
@@ -221,27 +221,7 @@ export enum Step {
                 (onTimeSelected)="timeSelected($event)"
                 (onTitleChanged)="titleChanged($event)">
             </dayview>
-                        <ztodayview *ngSwitchCase="'ztoday'"
-                [formatDayTitle]="formatDayTitle"
-                [formatHourColumn]="formatHourColumn"
-                [allDayLabel]="allDayLabel"
-                [hourParts]="hourParts"
-                [eventSource]="eventSource"
-                [markDisabled]="markDisabled"
-                [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
-                [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
-                [locale]="locale"
-                [dateFormatter]="dateFormatter"
-                [dir]="dir"
-                [scrollToHour]="scrollToHour"
-                [preserveScrollPosition]="preserveScrollPosition"
-                [lockSwipeToPrev]="lockSwipeToPrev"
-                [lockSwipes]="lockSwipes"
-                (onRangeChanged)="rangeChanged($event)"
-                (onEventSelected)="eventSelected($event)"
-                (onTimeSelected)="timeSelected($event)"
-                (onTitleChanged)="titleChanged($event)">
-            </ztodayview>
+                     
         </div>
     `,
     styles: [`
