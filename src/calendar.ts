@@ -115,7 +115,7 @@ export interface IDateFormatter {
     formatDayViewHourColumn?: {(date: Date): string;};
 }
 
-export type CalendarMode = 'day' | 'month' | 'week | ztoday';
+export type CalendarMode = 'day' | 'month' | 'week' | 'ztoday';
 
 export type QueryMode = 'local' | 'remote';
 

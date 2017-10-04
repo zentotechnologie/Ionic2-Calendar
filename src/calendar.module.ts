@@ -5,13 +5,15 @@ import 'intl/locale-data/jsonp/en';
 import { MonthViewComponent } from './monthview';
 import { WeekViewComponent } from './weekview';
 import { DayViewComponent } from './dayview';
+import { ZtoDayViewComponent } from './ztodayview';
+
 import {CalendarComponent} from './calendar';
 import { CalendarService } from './calendar.service';
 import { initPositionScrollComponent } from './init-position-scroll';
 
 @NgModule({
     declarations: [
-        MonthViewComponent, WeekViewComponent, DayViewComponent, CalendarComponent, initPositionScrollComponent
+        MonthViewComponent, WeekViewComponent, DayViewComponent, ZtoDayViewComponent,CalendarComponent, initPositionScrollComponent
     ],
     imports: [IonicModule],
     exports: [CalendarComponent],
