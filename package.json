@@ -23,6 +23,7 @@
     "dev": "tsc --watch",
     "postinstall": "typings install",
     "prepare": "npm run build-prod && npm run copy_static_files_prod"
+      "dist": "cd lib && npm publish"
   },
   "main": "./index.js",
   "dependencies": {},
