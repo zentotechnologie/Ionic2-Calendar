@@ -1,6 +1,6 @@
 {
     "name": "@zentotech/ionic2-calendar",
-    "version": "0.2.22",
+    "version": "0.2.23",
     "description": "Ionic2 calendar component",
     "keywords": [
         "Ionic2",
@@ -12,7 +12,6 @@
         "type": "git",
         "url": "git+https://github.com/zentotechnologie/Ionic2-Calendar.git"
     },
-
     "scripts": {
         "build": "rm -rf dist && tsc",
         "build-prod": "rm -rf aot && node_modules/.bin/ngc -p tsconfig-aot.json && node_modules/.bin/ngc src && mv src/*ngfactory.ts aot && rm -r aot/waste",
