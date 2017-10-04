@@ -3,7 +3,7 @@
 Ionic2 calendar directive
 
 # Demo
-https://twinssbc.github.io/Ionic2-Calendar/demo/
+https://zentotechnologie.github.io/Ionic2-Calendar/demo/
 
 # Dependency
 The latest version has below dependency:      
