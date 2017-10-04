@@ -19,7 +19,7 @@
     "copy_static_files_prod": "cp -r package.json README.md LICENSE tsconfig.json typings.json typings aot/",
     "dev": "tsc --watch",
     "postinstall": "typings install",
-    "prepublish": "npm run build-prod"
+    "prepare": "npm run build-prod copy_static_files_prod"
   },
   "main": "./index.js",
   "dependencies": {},
