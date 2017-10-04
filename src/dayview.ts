@@ -13,7 +13,7 @@ import { IDisplayAllDayEvent } from "./calendar";
         <ion-slides #daySlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
             <ion-slide>
                 <div class="dayview-allday-table">
-                    <div class="dayview-allday-label">{{allDayLabel}}</div>
+                    
                     <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
                         <table class="table table-bordered dayview-allday-content-table">
                             <tbody>
