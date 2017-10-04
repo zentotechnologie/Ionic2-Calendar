@@ -1,6 +1,6 @@
 {
   "name": "@zentotech/ionic2-calendar",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "Ionic2 calendar component",
   "keywords": [
     "Ionic2",
@@ -23,7 +23,7 @@
     "dev": "tsc --watch",
     "postinstall": "typings install",
     "prepare": "npm run build-prod && npm run copy_static_files_prod",
-      "dist": "cd lib && npm publish"
+    "dist": "cd lib && npm publish"
   },
   "main": "./index.js",
   "dependencies": {},
