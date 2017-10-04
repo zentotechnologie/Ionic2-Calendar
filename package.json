@@ -23,7 +23,7 @@
         "copy_static_files_dist": "cp -r package.json README.md LICENSE tsconfig.json typings.json typings dist/",
         "dev": "tsc --watch",
         "postinstall": "typings install",
-        "ztopublish": "npm run build-prod && npm run copy_static_files_dist && cd dist && npm publish",
+        "ztopublish": "npm run build-prod && npm run copy_static_files_prod && cd aot && npm publish",
         "dist": "cd lib && npm publish"
     },
     "main": "./index.js",
