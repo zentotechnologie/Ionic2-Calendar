@@ -12,31 +12,7 @@ import { IDisplayAllDayEvent } from "./calendar";
     template: `
         <ion-slides #daySlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
             <ion-slide>
-                <div class="dayview-allday-table">
-                    
-                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
-                        <table class="table table-bordered dayview-allday-content-table">
-                            <tbody>
-                            <tr>
-                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[0].allDayEvents.length>0}"
-                                    [ngStyle]="{height: 25*views[0].allDayEvents.length+'px'}"
-                                    *ngIf="0===currentViewIndex">
-                                    <div *ngFor="let displayEvent of views[0].allDayEvents; let eventIndex=index"
-                                         class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </template>
-                                    </div>
-                                </td>
-                                <td class="calendar-cell" *ngIf="0!==currentViewIndex">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </ion-scroll>
-                </div>
+         
                 <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
@@ -74,31 +50,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                 </init-position-scroll>
             </ion-slide>
             <ion-slide>
-                <div class="dayview-allday-table">
-                   
-                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
-                        <table class="table table-bordered dayview-allday-content-table">
-                            <tbody>
-                            <tr>
-                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[1].allDayEvents.length>0}"
-                                    [ngStyle]="{height: 25*views[1].allDayEvents.length+'px'}"
-                                    *ngIf="1===currentViewIndex">
-                                    <div *ngFor="let displayEvent of views[1].allDayEvents; let eventIndex=index"
-                                         class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </template>
-                                    </div>
-                                </td>
-                                <td class="calendar-cell" *ngIf="1!==currentViewIndex">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </ion-scroll>
-                </div>
+             
                 <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
@@ -136,31 +88,7 @@ import { IDisplayAllDayEvent } from "./calendar";
                 </init-position-scroll>
             </ion-slide>
             <ion-slide>
-                <div class="dayview-allday-table">
-                    
-                    <ion-scroll scrollY="true" zoom="false" class="dayview-allday-content-wrapper">
-                        <table class="table table-bordered dayview-allday-content-table">
-                            <tbody>
-                            <tr>
-                                <td class="calendar-cell" [ngClass]="{'calendar-event-wrap':views[2].allDayEvents.length>0}"
-                                    [ngStyle]="{height: 25*views[2].allDayEvents.length+'px'}"
-                                    *ngIf="2===currentViewIndex">
-                                    <div *ngFor="let displayEvent of views[2].allDayEvents; let eventIndex=index"
-                                         class="calendar-event" tappable
-                                         (click)="eventSelected(displayEvent.event)"
-                                         [ngStyle]="{top: 25*eventIndex+'px',width: '100%',height:'25px'}">
-                                        <template [ngTemplateOutlet]="dayviewAllDayEventTemplate"
-                                            [ngOutletContext]="{displayEvent:displayEvent}">
-                                        </template>
-                                    </div>
-                                </td>
-                                <td class="calendar-cell" *ngIf="2!==currentViewIndex">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </ion-scroll>
-                </div>
+           
                 <init-position-scroll *ngIf="2===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
@@ -306,7 +234,7 @@ import { IDisplayAllDayEvent } from "./calendar";
         .dayview-allday-table {
           height: 0px;
           position: relative;
-          border-bottom: 1px solid red;
+         /** border-bottom: 1px solid red; **/
           font-size: 14px;
         }
 
