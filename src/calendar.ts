@@ -8,6 +8,8 @@ export interface IEvent {
     endTime: Date;
     startTime: Date;
     title: string;
+    minutestart:number;
+    eventlength:number;
 }
 
 export interface IRange {
@@ -206,11 +208,14 @@ export enum Step {
                 [allDayLabel]="allDayLabel"
                 [hourParts]="hourParts"
                 [eventSource]="eventSource"
+                [resources]="resources"
                 [markDisabled]="markDisabled"
                 [dayviewAllDayEventTemplate]="dayviewAllDayEventTemplate||defaultAllDayEventTemplate"
                 [dayviewNormalEventTemplate]="dayviewNormalEventTemplate||defaultNormalEventTemplate"
                 [locale]="locale"
                 [dateFormatter]="dateFormatter"
+                [storeclose]="storeclose"
+                [storeopen]="storeopen"                
                 [dir]="dir"
                 [scrollToHour]="scrollToHour"
                 [preserveScrollPosition]="preserveScrollPosition"
@@ -284,6 +289,7 @@ export class CalendarComponent implements OnInit {
 
     @Input() eventSource: IEvent[] = [];
     @Input() calendarMode: CalendarMode = 'month';
+    @Input() resources:string[];
     @Input() formatDay: string = 'd';
     @Input() formatDayHeader: string = 'EEE';
     @Input() formatDayTitle: string = 'MMMM dd, yyyy';
@@ -314,6 +320,8 @@ export class CalendarComponent implements OnInit {
     @Input() lockSwipeToPrev: boolean = false;
     @Input() lockSwipes: boolean = false;
     @Input() locale: string = "";
+    @Input() storeclose:number;
+    @Input() storeopen:number;
 
     @Output() onCurrentDateChanged = new EventEmitter<Date>();
     @Output() onRangeChanged = new EventEmitter<IRange>();

@@ -1,126 +1,226 @@
-import { DatePipe } from '@angular/common';
-import { Slides } from 'ionic-angular';
-import { Component, OnInit, OnChanges, HostBinding, Input, Output, EventEmitter, SimpleChanges, ViewChild, ViewEncapsulation, TemplateRef, ElementRef } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import {DatePipe} from '@angular/common';
+import {Slides} from 'ionic-angular';
+import {
+    Component,
+    OnInit,
+    OnChanges,
+    HostBinding,
+    Input,
+    Output,
+    EventEmitter,
+    SimpleChanges,
+    ViewChild,
+    ViewEncapsulation,
+    TemplateRef,
+    ElementRef
+} from '@angular/core';
+import {Subscription} from 'rxjs/Subscription';
 
-import { ICalendarComponent, IDayView, IDayViewRow, IDisplayEvent, IEvent, ITimeSelected, IRange, CalendarMode, IDateFormatter } from './calendar';
-import { CalendarService } from './calendar.service';
-import { IDisplayAllDayEvent } from "./calendar";
+import {
+    ICalendarComponent,
+    IDayView,
+    IDayViewRow,
+    IDisplayEvent,
+    IEvent,
+    ITimeSelected,
+    IRange,
+    CalendarMode,
+    IDateFormatter
+} from './calendar';
+import {CalendarService} from './calendar.service';
+import {IDisplayAllDayEvent} from "./calendar";
+import * as _ from "lodash";
+import * as moment from 'moment';
 
 @Component({
     selector: 'dayview',
     template: `
         <ion-slides #daySlider [loop]="true" [dir]="dir" (ionSlideDidChange)="onSlideChanged()">
-            <ion-slide>
-         
+             <ion-slide>
                 <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr *ngFor="let tm of views[0].rows; let i = index">
+                            <tr>
+                                <td class="calendar-hour-column text-center">&nbsp;</td>
+                                <td class="calendar-cell">
+                                <div class="calendar-event-wrap">
+                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+</div>
+                                           
+                                </td>
+                           </tr>
+                           <ng-container  *ngFor="let tm of views[0].rows; let i = index" >
+                           
+
+                            <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
                                     {{hourColumnLabels[i]}}
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                                        <div *ngFor="let displayEvent of sortEventsByResource(tm.events);let i = index" class="calendar-event" tappable
                                              (click)="eventSelected(displayEvent.event)"
-                                             [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                                             
+                                             [ngStyle]="{top: ((100/60)*displayEvent.event.minutestart)+'%', left:resourceSlot[displayEvent.event.resource]+'%',width:nbresource+'%', height: (((100/60)*displayEvent.event.eventlength)+(displayEvent.event.eventlength/100)*2)+'%'}">
                                              <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
                                                  [ngOutletContext]="{displayEvent:displayEvent}">
                                              </template>
+                                            
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </init-position-scroll>
                 <init-position-scroll *ngIf="0!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
-                    <table class="table table-bordered table-fixed dayview-normal-event-table">
+                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr *ngFor="let tm of views[0].rows; let i = index">
+                            <tr>
+                                <td class="calendar-hour-column text-center">&nbsp;</td>
+                                <td class="calendar-cell">
+                                <div class="calendar-event-wrap">
+                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+                                </div>         
+                                </td>
+                           </tr>
+                           <ng-container  *ngFor="let tm of views[0].rows; let i = index" >
+                            <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
                                     {{hourColumnLabels[i]}}
                                 </td>
-                                <td class="calendar-cell">
+                                <td class="calendar-cell" >
                                 </td>
                             </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </init-position-scroll>
             </ion-slide>
+            
             <ion-slide>
-             
                 <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
-                    <table class="table table-bordered table-fixed dayview-normal-event-table">
+                   <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr *ngFor="let tm of views[1].rows; let i = index">
+                            <tr>
+                                <td class="calendar-hour-column text-center">&nbsp;</td>
+                                <td class="calendar-cell">
+                                <div class="calendar-event-wrap">
+                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+</div>
+                                           
+                                </td>
+                           </tr>
+                           <ng-container  *ngFor="let tm of views[1].rows; let i = index" >
+                           
+
+                            <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
                                     {{hourColumnLabels[i]}}
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                                        <div *ngFor="let displayEvent of sortEventsByResource(tm.events);let i = index" class="calendar-event" tappable
                                              (click)="eventSelected(displayEvent.event)"
-                                             [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                                             
+                                             [ngStyle]="{top: ((100/60)*displayEvent.event.minutestart)+'%', left:resourceSlot[displayEvent.event.resource]+'%',width:nbresource+'%', height: (((100/60)*displayEvent.event.eventlength)+(displayEvent.event.eventlength/100)*2)+'%'}">
                                              <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
                                                  [ngOutletContext]="{displayEvent:displayEvent}">
                                              </template>
+                                            
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </init-position-scroll>
                 <init-position-scroll *ngIf="1!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
-                    <table class="table table-bordered table-fixed dayview-normal-event-table">
+                   <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr *ngFor="let tm of views[1].rows; let i = index">
+                            <tr>
+                                <td class="calendar-hour-column text-center">&nbsp;</td>
+                                <td class="calendar-cell">
+                                    <div class="calendar-event-wrap">
+                                     <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+                                    </div>                                           
+                                </td>
+                           </tr>
+                           <ng-container  *ngFor="let tm of views[1].rows; let i = index" >                           
+
+                            <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
                                     {{hourColumnLabels[i]}}
                                 </td>
-                                <td class="calendar-cell">
+                                <td class="calendar-cell">                                   
                                 </td>
                             </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </init-position-scroll>
             </ion-slide>
-            <ion-slide>
-           
-                <init-position-scroll *ngIf="2===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
-                    <table class="table table-bordered table-fixed dayview-normal-event-table">
+            
+             <ion-slide>
+                <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
+                   <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr *ngFor="let tm of views[2].rows; let i = index">
+                            <tr>
+                                <td class="calendar-hour-column text-center">&nbsp;</td>
+                                <td class="calendar-cell">
+                                <div class="calendar-event-wrap">
+                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+</div>
+                                           
+                                </td>
+                           </tr>
+                           <ng-container  *ngFor="let tm of views[2].rows; let i = index" >
+                           
+
+                            <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
                                     {{hourColumnLabels[i]}}
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
-                                        <div *ngFor="let displayEvent of tm.events" class="calendar-event" tappable
+                                        <div *ngFor="let displayEvent of sortEventsByResource(tm.events);let i = index" class="calendar-event" tappable
                                              (click)="eventSelected(displayEvent.event)"
-                                             [ngStyle]="{top: (37*displayEvent.startOffset/hourParts)+'px', left: 100/displayEvent.overlapNumber*displayEvent.position+'%', width: 100/displayEvent.overlapNumber+'%', height: 37*(displayEvent.endIndex -displayEvent.startIndex - (displayEvent.endOffset + displayEvent.startOffset)/hourParts)+'px'}">
+                                             
+                                             [ngStyle]="{top: ((100/60)*displayEvent.event.minutestart)+'%', left:resourceSlot[displayEvent.event.resource]+'%',width:nbresource+'%', height: (((100/60)*displayEvent.event.eventlength)+(displayEvent.event.eventlength/100)*2)+'%'}">
                                              <template [ngTemplateOutlet]="dayviewNormalEventTemplate"
                                                  [ngOutletContext]="{displayEvent:displayEvent}">
                                              </template>
+                                            
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </init-position-scroll>
-                <init-position-scroll *ngIf="2!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
-                    <table class="table table-bordered table-fixed dayview-normal-event-table">
+                <init-position-scroll *ngIf="1!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
+                   <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr *ngFor="let tm of views[2].rows; let i = index">
+                            <tr>
+                                <td class="calendar-hour-column text-center">&nbsp;</td>
+                                <td class="calendar-cell">
+                                    <div class="calendar-event-wrap">
+                                     <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+                                    </div>                                           
+                                </td>
+                           </tr>
+                           <ng-container  *ngFor="let tm of views[2].rows; let i = index" >                           
+                            <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
                                     {{hourColumnLabels[i]}}
                                 </td>
-                                <td class="calendar-cell">
+                                <td class="calendar-cell">                                   
                                 </td>
                             </tr>
+                            </ng-container>
                         </tbody>
                     </table>
                 </init-position-scroll>
@@ -188,7 +288,9 @@ import { IDisplayAllDayEvent } from "./calendar";
 
         .calendar-event {
           position: absolute;
-          padding: 2px;
+        
+         padding-left: 2px;
+         padding-right:2px;
           cursor: pointer;
           z-index: 10000;
         }
@@ -302,51 +404,60 @@ import { IDisplayAllDayEvent } from "./calendar";
     encapsulation: ViewEncapsulation.None
 })
 export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
-    @ViewChild('daySlider') slider:Slides;
+    @ViewChild('daySlider') slider: Slides;
     @HostBinding('class.dayview') class = true;
 
-    @Input() dayviewAllDayEventTemplate:TemplateRef<IDisplayAllDayEvent>;
-    @Input() dayviewNormalEventTemplate:TemplateRef<IDisplayEvent>;
+    @Input() dayviewAllDayEventTemplate: TemplateRef<IDisplayAllDayEvent>;
+    @Input() dayviewNormalEventTemplate: TemplateRef<IDisplayEvent>;
 
-    @Input() formatHourColumn:string;
-    @Input() formatDayTitle:string;
-    @Input() allDayLabel:string;
-    @Input() hourParts:number;
-    @Input() eventSource:IEvent[];
-    @Input() markDisabled:(date:Date) => boolean;
-    @Input() locale:string;
-    @Input() dateFormatter:IDateFormatter;
-    @Input() dir:string = "";
-    @Input() scrollToHour:number = 0;
-    @Input() preserveScrollPosition:boolean;
-    @Input() lockSwipeToPrev:boolean;
-    @Input() lockSwipes:boolean;
+    @Input() formatHourColumn: string;
+    @Input() formatDayTitle: string;
+    @Input() allDayLabel: string;
+    @Input() hourParts: number;
+    @Input() eventSource: IEvent[];
+    @Input() resources:string[];
+    @Input() markDisabled: (date: Date) => boolean;
+    @Input() locale: string;
+    @Input() dateFormatter: IDateFormatter;
+    @Input() dir: string = "";
+    @Input() scrollToHour: number = 0;
+    @Input() preserveScrollPosition: boolean;
+    @Input() lockSwipeToPrev: boolean;
+    @Input() lockSwipes: boolean;
+    @Input() storeclose:number;
+    @Input() storeopen:number;
+
 
     @Output() onRangeChanged = new EventEmitter<IRange>();
     @Output() onEventSelected = new EventEmitter<IEvent>();
     @Output() onTimeSelected = new EventEmitter<ITimeSelected>();
-    @Output() onTitleChanged = new EventEmitter<string>(true);
+    @Output() onTitleChanged = new EventEmitter<string >(true);
 
     public slideOption = {
         runCallbacksOnInit: false,
         loop: true
     };
-    public views:IDayView[] = [];
+    public views: IDayView[] = [];
     public currentViewIndex = 0;
     public direction = 0;
-    public mode:CalendarMode = 'day';
-    public range:IRange;
+    public mode: CalendarMode = 'day';
+    public range: IRange;
 
     private inited = false;
     private callbackOnInit = true;
-    private currentDateChangedFromParentSubscription:Subscription;
-    private eventSourceChangedSubscription:Subscription;
-    private hourColumnLabels:string[];
-    private initScrollPosition:number;
-    private formatTitle:(date:Date) => string;
-    private formatHourColumnLabel:(date:Date) => string;
+    private currentDateChangedFromParentSubscription: Subscription;
+    private eventSourceChangedSubscription: Subscription;
+    private hourColumnLabels: string[];
+    private initScrollPosition: number;
+    private formatTitle: (date: Date) => string;
+    private formatHourColumnLabel: (date: Date) => string;
+    private nbresource:number;
+    private resourceSlot: { [index:string] : number } = {};
+    private weekdays:any[]=[];
+    public  initdate=moment();
 
-    constructor(private calendarService:CalendarService, private elm:ElementRef) {
+
+    constructor(private calendarService: CalendarService, private elm: ElementRef) {
     }
 
     ngOnInit() {
@@ -354,7 +465,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             this.formatTitle = this.dateFormatter.formatDayViewTitle;
         } else {
             var datePipe = new DatePipe(this.locale);
-            this.formatTitle = function (date:Date) {
+            this.formatTitle = function (date: Date) {
                 return datePipe.transform(date, this.formatDayTitle);
             };
         }
@@ -363,7 +474,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             this.formatHourColumnLabel = this.dateFormatter.formatDayViewHourColumn;
         } else {
             var datePipe = new DatePipe(this.locale);
-            this.formatHourColumnLabel = function (date:Date) {
+            this.formatHourColumnLabel = function (date: Date) {
                 return datePipe.transform(date, this.formatHourColumn);
             };
         }
@@ -388,6 +499,20 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         this.eventSourceChangedSubscription = this.calendarService.eventSourceChanged$.subscribe(() => {
             this.onDataLoaded();
         });
+        this.resources=this.resources.sort();
+
+        var currentDate=moment();
+        var currentDate = moment();
+        var weekStart = currentDate.clone().startOf('week');
+        var weekEnd = currentDate.clone().endOf('week');
+
+
+        for (var i = 0; i <= 6; i++) {
+
+            this.weekdays.push(moment(weekStart).add(i, 'days').format("dddd").substring(0,1));
+
+        };
+
     }
 
     ngAfterViewInit() {
@@ -403,7 +528,13 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
     }
 
-    ngOnChanges(changes:SimpleChanges) {
+    sortEventsByResource(events:any){
+
+        return _.orderBy(events,function(e:any) { return e.event.resource});
+
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
         if (!this.inited) return;
 
         let eventSourceChange = changes['eventSource'];
@@ -456,23 +587,27 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             direction = -1;
             this.slider.slideTo(3, 0, false);
         }
+        this.initdate.add(direction,"days")
+       // console.log("slide move direction : ", this.initdate.format("DDMMYYYY"));
         this.currentViewIndex = currentSlideIndex;
         this.move(direction);
+
     }
 
-    move(direction:number) {
+    move(direction: number) {
         if (direction === 0) return;
 
         this.direction = direction;
         let adjacentDate = this.calendarService.getAdjacentCalendarDate(this.mode, direction);
         this.calendarService.setCurrentDate(adjacentDate);
+       // console.log("adjacentDate:",adjacentDate)
         this.refreshView();
         this.direction = 0;
     }
 
-    static createDateObjects(startTime:Date):IDayViewRow[] {
-        let rows:IDayViewRow[] = [],
-            time:Date,
+    static createDateObjects(startTime: Date): IDayViewRow[] {
+        let rows: IDayViewRow[] = [],
+            time: Date,
             currentHour = startTime.getHours(),
             currentDate = startTime.getDate();
 
@@ -488,22 +623,22 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         return rows;
     }
 
-    private getHourColumnLabels():string[] {
-        let hourColumnLabels:string[] = [];
+    private getHourColumnLabels(): string[] {
+        let hourColumnLabels: string[] = [];
         for (let hour = 0, length = this.views[0].rows.length; hour < length; hour += 1) {
             hourColumnLabels.push(this.formatHourColumnLabel(this.views[0].rows[hour].time));
         }
         return hourColumnLabels;
     }
 
-    getViewData(startTime:Date):IDayView {
+    getViewData(startTime: Date): IDayView {
         return {
             rows: DayViewComponent.createDateObjects(startTime),
             allDayEvents: []
         };
     }
 
-    getRange(currentDate:Date):IRange {
+    getRange(currentDate: Date): IRange {
         let year = currentDate.getFullYear(),
             month = currentDate.getMonth(),
             date = currentDate.getDate(),
@@ -525,10 +660,18 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
             utcEndTime = new Date(Date.UTC(endTime.getFullYear(), endTime.getMonth(), endTime.getDate())),
             currentViewIndex = this.currentViewIndex,
             rows = this.views[currentViewIndex].rows,
-            allDayEvents:IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
+            allDayEvents: IDisplayAllDayEvent[] = this.views[currentViewIndex].allDayEvents = [],
             oneHour = 3600000,
             eps = 0.016,
             normalEventInRange = false;
+
+this.nbresource=100/this.resources.length;
+        this.resources.sort();
+for(var i=0;i<this.resources.length;i++){
+    this.resourceSlot[this.resources[i]]=i*this.nbresource;
+}
+
+
 
         for (let hour = 0; hour < 24; hour += 1) {
             rows[hour].events = [];
@@ -554,8 +697,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                     normalEventInRange = true;
                 }
 
-                let timeDiff:number;
-                let timeDifferenceStart:number;
+                let timeDiff: number;
+                let timeDifferenceStart: number;
                 if (eventStartTime <= startTime) {
                     timeDifferenceStart = 0;
                 } else {
@@ -563,7 +706,7 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                     timeDifferenceStart = timeDiff / oneHour;
                 }
 
-                let timeDifferenceEnd:number;
+                let timeDifferenceEnd: number;
                 if (eventEndTime >= endTime) {
                     timeDiff = endTime.getTime() - startTime.getTime() - (endTime.getTimezoneOffset() - startTime.getTimezoneOffset()) * 60000;
                     timeDifferenceEnd = timeDiff / oneHour;
@@ -580,7 +723,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                     startOffset = Math.floor((timeDifferenceStart - startIndex) * this.hourParts);
                     endOffset = Math.floor((endIndex - timeDifferenceEnd) * this.hourParts);
                 }
-
+event.minutestart=moment(event.startTime).minute();
+                event.eventlength=moment(event.endTime).diff(moment(event.startTime),'minutes');
                 let displayEvent = {
                     event: event,
                     startIndex: startIndex,
@@ -592,16 +736,17 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
                 let eventSet = rows[startIndex].events;
                 if (eventSet) {
                     eventSet.push(displayEvent);
+
                 } else {
                     eventSet = [];
                     eventSet.push(displayEvent);
-                    rows[startIndex].events = eventSet;
+                    rows[startIndex].events = _.orderBy(eventSet,'resource');
                 }
             }
         }
 
         if (normalEventInRange) {
-            let orderedEvents:IDisplayEvent[] = [];
+            let orderedEvents: IDisplayEvent[] = [];
             for (let hour = 0; hour < 24; hour += 1) {
                 if (rows[hour].events) {
                     rows[hour].events.sort(DayViewComponent.compareEventByStartOffset);
@@ -626,16 +771,17 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         this.calendarService.rangeChanged(this);
     }
 
-    getTitle():string {
+    getTitle(): string {
         let startingDate = this.range.startTime;
-        return this.formatTitle(startingDate);
+      //  console.log("startingDate",startingDate);
+        return moment(startingDate).format("X");//this.formatTitle(startingDate);
     }
 
-    private static compareEventByStartOffset(eventA:IDisplayEvent, eventB:IDisplayEvent) {
+    private static compareEventByStartOffset(eventA: IDisplayEvent, eventB: IDisplayEvent) {
         return eventA.startOffset - eventB.startOffset;
     }
 
-    select(selectedTime:Date, events:IDisplayEvent[]) {
+    select(selectedTime: Date, events: IDisplayEvent[]) {
         var disabled = false;
         if (this.markDisabled) {
             disabled = this.markDisabled(selectedTime);
@@ -648,16 +794,16 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         });
     }
 
-    placeEvents(orderedEvents:IDisplayEvent[]) {
+    placeEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
         DayViewComponent.calculateWidth(orderedEvents);
     }
 
-    placeAllDayEvents(orderedEvents:IDisplayEvent[]) {
+    placeAllDayEvents(orderedEvents: IDisplayEvent[]) {
         this.calculatePosition(orderedEvents);
     }
 
-    overlap(event1:IDisplayEvent, event2:IDisplayEvent):boolean {
+    overlap(event1: IDisplayEvent, event2: IDisplayEvent): boolean {
         let earlyEvent = event1,
             lateEvent = event2;
         if (event1.startIndex > event2.startIndex || (event1.startIndex === event2.startIndex && event1.startOffset > event2.startOffset)) {
@@ -672,11 +818,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
     }
 
-    calculatePosition(events:IDisplayEvent[]) {
+    calculatePosition(events: IDisplayEvent[]) {
         let len = events.length,
             maxColumn = 0,
-            col:number,
-            isForbidden:boolean[] = new Array(len);
+            col: number,
+            isForbidden: boolean[] = new Array(len);
 
         for (let i = 0; i < len; i += 1) {
             for (col = 0; col < maxColumn; col += 1) {
@@ -706,8 +852,8 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
     }
 
-    private static calculateWidth(orderedEvents:IDisplayEvent[]) {
-        let cells:{ calculated: boolean; events: IDisplayEvent[]; }[] = new Array(24);
+    private static calculateWidth(orderedEvents: IDisplayEvent[]) {
+        let cells: {calculated: boolean; events: IDisplayEvent[];}[] = new Array(24);
 
         // sort by position in descending order, the right most columns should be calculated first
         orderedEvents.sort((eventA, eventB) => {
@@ -760,11 +906,11 @@ export class DayViewComponent implements ICalendarComponent, OnInit, OnChanges {
         }
     }
 
-    eventSelected(event:IEvent) {
+    eventSelected(event: IEvent) {
         this.onEventSelected.emit(event);
     }
 
-    setScrollPosition(scrollPosition:number) {
+    setScrollPosition(scrollPosition: number) {
         this.initScrollPosition = scrollPosition;
     }
 }
