@@ -54,7 +54,7 @@ import * as moment from 'moment';
 
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -88,7 +88,7 @@ import * as moment from 'moment';
                            <ng-container  *ngFor="let tm of views[0].rows; let i = index" >
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
                                 </td>
                                 <td class="calendar-cell" >
                                 </td>
@@ -117,7 +117,7 @@ import * as moment from 'moment';
 
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -152,7 +152,7 @@ import * as moment from 'moment';
 
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
                                 </td>
                                 <td class="calendar-cell">                                   
                                 </td>
@@ -181,7 +181,7 @@ import * as moment from 'moment';
 
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -215,7 +215,7 @@ import * as moment from 'moment';
                            <ng-container  *ngFor="let tm of views[2].rows; let i = index" >                           
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    {{hourColumnLabels[i]}}
+                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
                                 </td>
                                 <td class="calendar-cell">                                   
                                 </td>
