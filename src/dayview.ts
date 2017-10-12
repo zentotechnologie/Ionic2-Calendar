@@ -40,21 +40,10 @@ import * as moment from 'moment';
                 <init-position-scroll *ngIf="0===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                     <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr>
-                                <td class="calendar-hour-column text-center">&nbsp;</td>
-                                <td class="calendar-cell">
-                                <div class="calendar-event-wrap">
-                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
-</div>
-                                           
-                                </td>
-                           </tr>
                            <ng-container  *ngFor="let tm of views[0].rows; let i = index" >
-                           
-
-                            <tr *ngIf="i>=storeopen && i<storeclose">
+                              <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
+                                    <div class="ztohourlabel"><div>{{hourColumnLabels[i]}}</div></div>
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -78,17 +67,17 @@ import * as moment from 'moment';
                      <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
                             <tr>
-                                <td class="calendar-hour-column text-center">&nbsp;</td>
-                                <td class="calendar-cell">
+                                <th class="calendar-hour-column text-center">&nbsp;</th>
+                                <th >
                                 <div class="calendar-event-wrap">
-                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
+                                 <div  class="calendar-event ztoresourceheader" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
                                 </div>         
-                                </td>
+                                </th>
                            </tr>
                            <ng-container  *ngFor="let tm of views[0].rows; let i = index" >
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
+                                    <div class="ztohourlabel"><div>{{hourColumnLabels[i]}}</div></div>
                                 </td>
                                 <td class="calendar-cell" >
                                 </td>
@@ -103,21 +92,10 @@ import * as moment from 'moment';
                 <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                    <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr>
-                                <td class="calendar-hour-column text-center">&nbsp;</td>
-                                <td class="calendar-cell">
-                                <div class="calendar-event-wrap">
-                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
-</div>
-                                           
-                                </td>
-                           </tr>
                            <ng-container  *ngFor="let tm of views[1].rows; let i = index" >
-                           
-
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
+                                    <div class="ztohourlabel"><div>{{hourColumnLabels[i]}}</div></div>
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -140,19 +118,11 @@ import * as moment from 'moment';
                 <init-position-scroll *ngIf="1!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
                    <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr>
-                                <td class="calendar-hour-column text-center">&nbsp;</td>
-                                <td class="calendar-cell">
-                                    <div class="calendar-event-wrap">
-                                     <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
-                                    </div>                                           
-                                </td>
-                           </tr>
-                           <ng-container  *ngFor="let tm of views[1].rows; let i = index" >                           
+                            <ng-container  *ngFor="let tm of views[1].rows; let i = index" >                           
 
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
+                                    <div class="ztohourlabel"><div>{{hourColumnLabels[i]}}</div></div>
                                 </td>
                                 <td class="calendar-cell">                                   
                                 </td>
@@ -167,21 +137,10 @@ import * as moment from 'moment';
                 <init-position-scroll *ngIf="1===currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition" [emitEvent]="preserveScrollPosition" (onScroll)="setScrollPosition($event)">
                    <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr>
-                                <td class="calendar-hour-column text-center">&nbsp;</td>
-                                <td class="calendar-cell">
-                                <div class="calendar-event-wrap">
-                                 <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
-</div>
-                                           
-                                </td>
-                           </tr>
-                           <ng-container  *ngFor="let tm of views[2].rows; let i = index" >
-                           
-
+                         <ng-container  *ngFor="let tm of views[2].rows; let i = index" >
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
+                                    <div class="ztohourlabel"><div>{{hourColumnLabels[i]}}</div></div>
                                 </td>
                                 <td class="calendar-cell" tappable (click)="select(tm.time, tm.events)">
                                     <div [ngClass]="{'calendar-event-wrap': tm.events}" *ngIf="tm.events">
@@ -204,18 +163,10 @@ import * as moment from 'moment';
                 <init-position-scroll *ngIf="1!==currentViewIndex" class="dayview-normal-event-container" [initPosition]="initScrollPosition">
                    <table class="table table-bordered table-fixed dayview-normal-event-table">
                         <tbody>
-                            <tr>
-                                <td class="calendar-hour-column text-center">&nbsp;</td>
-                                <td class="calendar-cell">
-                                    <div class="calendar-event-wrap">
-                                     <div  class="calendar-event" [ngStyle]="{position:absolute,top:0,left:nbresource*i+'%',width:nbresource+'%'}" *ngFor="let resource of resources;let i = index">{{resource}}</div>
-                                    </div>                                           
-                                </td>
-                           </tr>
                            <ng-container  *ngFor="let tm of views[2].rows; let i = index" >                           
                             <tr *ngIf="i>=storeopen && i<storeclose">
                                 <td class="calendar-hour-column text-center">
-                                    <div class="ztohourlabel">{{hourColumnLabels[i]}}</div>
+                                    <div class="ztohourlabel"><div>{{hourColumnLabels[i]}}</div></div>
                                 </td>
                                 <td class="calendar-cell">                                   
                                 </td>
